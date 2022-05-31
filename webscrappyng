@@ -1,0 +1,17 @@
+import time
+from bs4 import BeautifulSoup
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+url = "https://www.youtube.com/playlist?list=PLeVxKOfiN6m0berj0xRZ8mZ9TGUq7Mp5w"
+
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver.get(url)
+time.sleep(10) 
+soup = BeautifulSoup(driver.page_source, 'html')
+t = soup.find_all('a', {'class': 'yt-simple-endpoint style-scope ytd-playlist-video-renderer'})
+texts = [element.text.strip() for element in t]
+
+print(texts)
