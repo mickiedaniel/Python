@@ -1,0 +1,58 @@
+import matplotlib as matplotlib
+import pandas as pd
+import matplotlib
+import numpy as np
+import seaborn as sns
+# traz as bibliotecas panda numpy, matplotlib, seaborn
+
+# variavel dv recebe dados do json
+from matplotlib import pyplot as plt
+
+df = pd.read_json('your_posts_1.json')
+
+# imprime 3 linhas
+#print(df.head(3))
+
+#renomeia a coluna timestamp
+df.rename(columns={'timestamp': 'date'}, inplace=True)
+
+# dropa umas colunas
+df = df.drop(['attachments', 'title', 'tags'], axis=1)
+
+#print(df.head(3))
+
+# da o numero de linhas e colunas
+#print(df.shape)
+
+#coloca o date como index
+df.set_index('date')
+
+#converte coluna date para date
+df['date'] = pd.to_datetime(df['date'])
+
+#organiza dados por mes e conta o numero de linhas
+post_counts = df.resample('MS', on='date').size()
+
+#print(post_counts)
+
+#formata tabela
+#formata tamanho da figura
+sns.set(rc={'figure.figsize':(40,20)})
+
+#formata fonte
+sns.set(font_scale=1.5)
+
+#formata eixo X
+x_labels = post_counts.index
+
+#cria barplot(barra do gráfico) e formata
+sns.barplot(x_labels, post_counts, color="blue")
+
+#configura rotulo do eixo x(ano) para ser mostrado em cada 2 anos (24 meses)
+tick_positions = np.arange(10, len(x_labels), step=24)
+
+#formata date para mostrar somente ano
+plt.xticks(tick_positions, x_labels[tick_positions].strftime("%Y"))
+
+#mostra plot
+plt.show()
